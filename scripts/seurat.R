@@ -21,8 +21,8 @@ dscSeurat <- subset(dscSeurat, subset = nFeature_RNA > 500)
 
 print('--- Normalizing and scaling data...')
 dscSeurat <- NormalizeData(object = dscSeurat, normalization.method = "LogNormalize", scale.factor = 10000)
-dscSeurat <- FindVariableFeatures(object = dscSeurat, do.plot = F)
-dscSeurat <- ScaleData(object = dscSeurat, display.progress = F)
+dscSeurat <- FindVariableFeatures(object = dscSeurat)
+dscSeurat <- ScaleData(object = dscSeurat)
 dscSeurat <- RunPCA(object = dscSeurat, pc.genes = dscSeurat@var.genes, do.print = TRUE)
 
 print('--- Running UMAP clustering...')
