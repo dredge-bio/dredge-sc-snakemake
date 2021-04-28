@@ -17,7 +17,7 @@ write.csv(rownames(dscCountsMatrix), snakemake@output[["transcripts"]])
 dscSeurat <- CreateSeuratObject(counts = dscCountsMatrix, min.cells = 5, min.features = 200)
 
 # dscSeurat <- subset(dscSeurat, subset.names = "nGene", low.thresholds = 500)
-dscSeurat <- subset(dscSeurat, subset = nFeature_RNA > 500)
+# dscSeurat <- subset(dscSeurat, subset = nFeature_RNA > 500)
 
 print('--- Normalizing and scaling data...')
 dscSeurat <- NormalizeData(object = dscSeurat, normalization.method = "LogNormalize", scale.factor = 10000)
