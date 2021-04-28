@@ -1,3 +1,5 @@
+configfile: "config.yaml"
+
 rule all:
 	input:
 		"out/transcripts.csv",
@@ -7,7 +9,7 @@ rule all:
 
 rule seurat:
 	input:
-		"../from-julian-2021-01-28/sc.counts_J.matrix"
+		config["count_matrix"]
 	output:
 		transcripts="out/transcripts_raw.csv",
 		embeddings="out/embeddings.csv",

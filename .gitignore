@@ -1,3 +1,4 @@
 *.swp
 .snakemake/
 out/
+config.yaml
