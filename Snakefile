@@ -9,7 +9,7 @@ rule seurat:
 	input:
 		"../from-julian-2021-01-28/sc.counts_J.matrix"
 	output:
-		transcripts="out/transcripts.csv",
+		transcripts="out/transcripts_raw.csv",
 		embeddings="out/embeddings.csv",
 		metadata="out/metadata.csv",
 		expressions="out/expressions.mtx"
@@ -31,3 +31,11 @@ rule compress_matrix:
 		"out/expressions.bin.gz"
 	shell:
 		"gzip -k {input}"
+
+rule parse_transcripts:
+	input:
+		"out/transcripts_raw.csv"
+	output:
+		"out/transcripts.csv"
+	shell:
+		"./scripts/parse_transcripts.py {input} > {output}"
