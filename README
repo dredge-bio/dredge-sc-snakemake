@@ -1,0 +1,1 @@
+To create all files required for DrEdGE configuration, install [Snakemake](https://snakemake.readthedocs.io/) and run `snakemake -j 1` in this directory. Generated files will be placed in the `out` directory.
