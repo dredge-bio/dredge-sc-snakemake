@@ -25,12 +25,14 @@ def pack_matrix(matrix_filename, output_filename):
     lines = []
 
     expr_measure_offsets = {}
+    transcripts = set()
+    cells = set()
 
     while line := infile_fp.readline():
         if not line.strip():
             break
 
-        cell_id, cluster_id, expr = line.split()
+        transcript_id, cell_id, expr = line.split()
 
         expr_measure = float(expr)
         expr_measure = float('{:0.3f}'.format(expr_measure))
@@ -38,12 +40,21 @@ def pack_matrix(matrix_filename, output_filename):
         if expr_measure not in expr_measure_offsets:
             expr_measure_offsets[expr_measure] = len(expr_measure_offsets)
 
+        # Subtract 1 to make these IDs 0 indexed (instead of 1 from R)
+        transcript_id = int(transcript_id) - 1
+        cell_id = int(cell_id) - 1
+
+        transcripts.add(transcript_id)
+        cells.add(cell_id)
+
         lines.append((
-            int(cell_id),
-            int(cluster_id),
+            transcript_id,
+            cell_id,
             expr_measure_offsets[expr_measure],
         ))
 
+    print('num cells: {}'.format(len(cells)))
+    print('num transcripts: {}'.format(len(transcripts)))
     print('expressions: ' + str(len(lines)))
     print('unique expression measurements: ' + str(len(expr_measure_offsets)))
     print('ratio: ' + str(len(expr_measure_offsets) / len(lines)))
@@ -51,7 +62,7 @@ def pack_matrix(matrix_filename, output_filename):
     # Sort lines first by expression measure, and then by transcript_id
     # (the former is to improve compression, since there are a lot of
     # repeated expression measures in a row)
-    lines = sorted(lines, key=lambda x: x[2])
+    lines = sorted(lines, key=lambda x: x[1])
     lines = sorted(lines, key=lambda x: x[0])
 
     transcript_expr_entry = np.dtype([
@@ -67,6 +78,11 @@ def pack_matrix(matrix_filename, output_filename):
     # Length of expression measure lookup table
     outfile_fp.write(
         np.uint16(len(expr_measure_offsets)).tobytes())
+
+    print('Version: {}'.format(VERSION_NUMBER))
+    print('Expression Lookup Length: {}'.format(len(expr_measure_offsets)))
+    print('First 4 expression lines: ')
+    print(lines[0:4])
 
     outfile_fp.write(
         np.array(list(expr_measure_offsets.keys()), dtype='<f4').tobytes())
