@@ -5,7 +5,8 @@ rule all:
 		"out/transcripts.csv",
 		"out/embeddings.csv",
 		"out/metadata.csv",
-		"out/expressions.bin.gz"
+		"out/expressions.bin.gz",
+		"out/cluster_dge.json"
 
 rule seurat:
 	input:
@@ -14,7 +15,8 @@ rule seurat:
 		transcripts="out/transcripts_raw.csv",
 		embeddings="out/embeddings.csv",
 		metadata="out/metadata.csv",
-		expressions="out/expressions.mtx"
+		expressions="out/expressions.mtx",
+		differential_expressions="out/seurat_cluster_dge.json"
 	script:
 		"scripts/seurat.R"
 
@@ -41,3 +43,11 @@ rule parse_transcripts:
 		"out/transcripts.csv"
 	shell:
 		"./scripts/parse_transcripts.py {input} > {output}"
+
+rule merge_dges:
+	input:
+		"out/seurat_cluster_dge.json"
+	output:
+		"out/cluster_dge.json"
+	shell:
+		"./scripts/merge_dges.py {input} > {output}"

@@ -1,5 +1,19 @@
 library(Seurat)
 library(Matrix)
+library(jsonlite)
+library(future)
+library(parallel)
+
+options(future.seed=TRUE)
+num.cpus <- detectCores() - 1
+
+if (num.cpus == 0) {
+	num.cpus <- 1
+}
+
+print(paste("--- Using ", num.cpus, " cores"))
+
+plan('multiprocess', workers=num.cpus)
 
 
 print(paste("--- Loading count data from", snakemake@input[[1]]))
@@ -28,3 +42,11 @@ write.csv(dscSeurat@meta.data, snakemake@output[["metadata"]])
 
 print('--- Outputting normalized expression matrix...')
 writeMM(GetAssayData(dscSeurat, slot="data"), snakemake@output[["expressions"]])
+
+print('--- Outputting differential expressions... (This will take a while)')
+differential.expressions = list()
+for (i in levels(dscSeurat)) {
+	print(paste('    ...finding markers in cluster ', i))
+	differential.expressions[[i]] = FindMarkers(dscSeurat, ident.1=i, min.pct=.25, verbose=TRUE)
+}
+write_json(differential.expressions, snakemake@output[["differential_expressions"]])
