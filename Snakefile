@@ -61,8 +61,12 @@ rule parse_transcripts:
 		"out/transcripts_raw.csv"
 	output:
 		"out/transcripts.csv"
-	shell:
-		"./scripts/parse_transcripts.py {input} > {output}"
+	run:
+		if "transcript_id_prefix" in config:
+			shell("./scripts/parse_transcripts.py {input} -p=\"{config[transcript_id_prefix]}\" > {output}")
+		else:
+			shell("./scripts/parse_transcripts.py {input} > {output}")
+
 
 rule merge_dges:
 	input:

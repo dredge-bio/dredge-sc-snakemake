@@ -11,7 +11,7 @@ parsed_measurements = []
 
 for cluster, measurements in data.items():
     for measurement in measurements:
-        transcript = measurement.pop('_row').replace('-', '|', 1)
+        transcript = measurement.pop('_row')
 
         parsed_measurements.append({
             "clusterID": cluster,
