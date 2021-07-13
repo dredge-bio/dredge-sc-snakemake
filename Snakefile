@@ -8,9 +8,29 @@ rule all:
 		"out/expressions.bin.gz",
 		"out/cluster_dge.json"
 
-rule seurat:
+if "seurat_object" in config:
+	rule seurat_object:
+		input:
+			config["seurat_object"]
+		output:
+			"out/seurat.rds"
+		shell:
+			"cp {input} {output}"
+elif "count_matrix" in config:
+	rule seurat_object:
+		input:
+			config["count_matrix"]
+		output:
+			"out/seurat.rds"
+		script:
+			"scripts/seurat_create.R"
+else:
+	raise Exception('No configuration method specified. Please set either `seurat_object` or `count_matrix` in config.yaml')
+	sys.exit(1)
+
+rule seurat_extract:
 	input:
-		config["count_matrix"]
+		"out/seurat.rds"
 	output:
 		transcripts="out/transcripts_raw.csv",
 		embeddings="out/embeddings.csv",
