@@ -2,6 +2,7 @@ configfile: "config.yaml"
 
 rule all:
 	input:
+		"out/clusters.json",
 		"out/transcripts.csv",
 		"out/embeddings.csv",
 		"out/metadata.csv",
@@ -32,6 +33,7 @@ rule seurat_extract:
 	input:
 		"out/seurat.rds"
 	output:
+		clusters="out/clusters.json",
 		transcripts="out/transcripts_raw.csv",
 		embeddings="out/embeddings.csv",
 		metadata="out/metadata.csv",

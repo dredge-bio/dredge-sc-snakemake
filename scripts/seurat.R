@@ -25,6 +25,7 @@ dscSeurat[["X__dredge_cluster"]] <- Idents(dscSeurat)
 
 
 print('--- Outputting embeddings and metadata...')
+write_json(levels(dscSeurat), snakemake@output[["clusters"]])
 write.csv(Embeddings(dscSeurat, reduction = "umap"), snakemake@output[["embeddings"]])
 write.csv(dscSeurat@meta.data, snakemake@output[["metadata"]])
 write.csv(rownames(dscSeurat[[dscSeurat@active.assay]]), snakemake@output[["transcripts"]])
